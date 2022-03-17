@@ -1,0 +1,217 @@
+<template>
+    <div class="signin_box">
+        <div>
+            <div class="input_box">
+                <div class="info_hint">Username:</div>
+                <input id="nameinput" class="info_input" v-model="user.name" placeholder="" maxlength="8" @blur="checkName">
+                <div class="error_hint" v-show="isErrorName">{{errorInfoName}}</div>
+            </div>
+            <div class="input_box">
+                <div class="info_hint">Password:</div> 
+                <input id="passwordinput" type="password" class="info_input" v-model="user.password" placeholder="" maxlength="16" @blur="checkPassword">
+                <div class="error_hint" v-show="isErrorPassword">{{errorInfoPassword}}</div>
+            </div>
+            <div class="input_box">
+                <div class="info_hint">Confirm your Password:</div> 
+                <input id="passwordconfirm" type="password" class="info_input" v-model="confirm_Password" placeholder="" maxlength="12" @blur="checkConfirm">
+                <div class="error_hint" v-show="isErrorConfirm">{{errorInfoConfirm}}</div>
+            </div>
+        </div>
+        
+        <div class="button_box">
+            <button class="signup button" v-bind="{disabled: !isCanConfirm}" @click="signup">Submit!</button>
+        </div>
+    </div>
+</template>
+
+<script>
+
+import { signup, checkDuplicated } from "./api/api.js"
+
+export default {
+    data(){
+        return {
+            user: {
+                name: "",
+                password: "",
+            },
+            errorInfoName: "",
+            errorInfoPassword: "",
+            errorInfoConfirm: "Password does not match.",
+            isErrorName: false,
+            isErrorPassword: false,
+            isErrorConfirm: false,
+            confirm_Password: "",
+        }
+    },
+    mounted(){
+
+    },
+    methods: {
+        signup: function() {
+            let res = this.checkInfo()
+            if (!res.status) {
+                alert(res.msg)
+                return false
+            }
+            let params = {
+                username: this.user.name,
+                password: this.user.password
+            }
+            // let _this = this
+            signup(params).then(res=>{
+                console.log(res)
+                // _this.$router.push()
+            }).catch(res=>{
+                console.log(res)
+            })
+        },
+
+        checkName: async function() {
+            if (this.user.name == "") {
+                this.errorInfoName = "User name can not be empty."
+                this.isErrorName = true
+            } else {
+                await checkDuplicated(this.user.name).then(res=>{
+                    console.log(res)
+                    this.errorInfoName = "This name has been exist."
+                    this.isErrorName = false
+                }).catch(res=>{
+                    console.log(res)
+                    this.isErrorName = true
+                })
+            }
+            
+        },
+
+        checkPassword: function() {
+            if (this.user.password.length<6) {
+                this.errorInfoPassword = "The length of password can not be less than 6."
+                this.isErrorPassword = true
+            }
+            else if (/[^\w]+/.test(this.user.password)) {
+                this.errorInfoPassword = "Invalid password. It can only be consisted of a-z, A-Z, 0-9, and '_'."
+                this.isErrorPassword = true
+            } else {
+                this.isErrorPassword = false
+            }
+        },
+
+        checkConfirm: function() {
+            if (this.user.password == this.confirm_Password) {
+                this.isErrorConfirm = false
+            } else {
+                this.isErrorConfirm = true
+            }
+        },
+
+        checkInfo: function() {
+            this.checkName()
+            this.checkPassword()
+            this.checkConfirm()
+            if (this.user.name == "" || this.isErrorName) {
+                return {
+                    status: false,
+                    msg: "Invalid username!"
+                }
+            } else if (this.user.password == "" || this.isErrorPassword) {
+                return {
+                    status: false,
+                    msg: "Invalid password!"
+                }
+            } else if (this.confirm_Password == "" || this.isErrorConfirm) {
+                return {
+                    status: false,
+                    msg: "Password does not match!"
+                }
+            } else {
+                return {
+                    status: true,
+                    msg: "sign up"
+                }
+            }
+        }
+    },
+    computed: {
+        isCanConfirm() {
+            if (!this.isErrorName && !this.isErrorPassword && !this.isErrorConfirm) {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+}
+</script>
+
+<style lang="scss" scoped>
+.signin_box {
+    text-align: left;
+    width: 300px;
+    height: 320px;
+    margin: auto;
+    padding: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    border: 1px solid;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .input_box {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 16px;
+
+        .info_hint {
+            width: 100%;
+            height: 20px;
+            font-size: 12px;
+        }
+
+        .info_input {            
+            width: calc(100% - 8px);
+            height: 22px;
+            font-size: 16px;
+            padding: 4px;
+        }
+
+        .error_hint {
+            font-size: 8px;
+            color: red;
+        }
+    }
+
+    .button_box {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-end;
+
+        .signup {
+            height: 28px;
+            font-size: 16px;
+            color: white;
+            background-color: blue;
+
+            &:hover {
+                background-color: #0088ce;
+            }
+        }
+
+        .button {
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 0;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+}
+</style>

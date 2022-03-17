@@ -7,7 +7,7 @@
             </div>
             <div class="input_box">
                 <div class="info_hint">Password:</div> 
-                <input id="passwordinput" class="info_input" v-model="user.password" placeholder="" maxlength="8">
+                <input id="passwordinput" type="password" class="info_input" v-model="user.password" placeholder="" maxlength="12">
                 <div class="error_hint" v-show="isError">{{errorInfo}}</div>
             </div>    
         </div>
@@ -31,7 +31,7 @@ export default {
                 password: "",
             },
             errorInfo: "Invalid username or password.",
-            isError: true,
+            isError: false,
         }
     },
     mounted(){
@@ -39,17 +39,27 @@ export default {
     },
     methods: {
         login: function() {
-            let params = {
-                username: this.user.name,
-                password: this.user.password
+            if (this.user.name == "") {
+                alert("Invalid user name!")
+            } else {
+                let params = {
+                    username: this.user.name,
+                    password: this.user.password
+                }
+                // let _this = this
+                signin(params).then(res=>{
+                    console.log(res)
+                    // _this.$router.push()
+                }).catch(res=>{
+                    this.errorInfo = res.msg
+                    this.isError = true
+                    console.log(res)
+                })
             }
-            // let _this = this
-            signin(params).then(res=>{
-                console.log(res)
-                // _this.$router.push()
-            }).catch(res=>{
-                console.log(res)
-            })
+        },
+
+        signup: function() {
+            this.$router.push('/signup')
         }
     },
 }
