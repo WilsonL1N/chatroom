@@ -19,14 +19,14 @@
         </div>
         
         <div class="button_box">
-            <button class="signup button" v-bind="{disabled: !isCanConfirm}" @click="signup">Submit!</button>
+            <button class="signup button" v-bind="{disabled: !isCanConfirm}" @click="register">Submit!</button>
         </div>
     </div>
 </template>
 
 <script>
 
-import { signup, checkDuplicated } from "./api/api.js"
+import { signup, checkDuplicated } from "api/api.js"
 
 export default {
     data(){
@@ -48,7 +48,7 @@ export default {
 
     },
     methods: {
-        signup: function() {
+        register: function() {
             let res = this.checkInfo()
             if (!res.status) {
                 alert(res.msg)
