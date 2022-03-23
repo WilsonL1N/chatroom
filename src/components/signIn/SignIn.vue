@@ -58,28 +58,35 @@ export default {
                     name: this.user.name,
                     password: this.user.password
                 }
-                this.isloading = true
+                let _this = this
+                _this.isloading = true
                 login(params).then(res=>{
-                    this.isloading = false
+                    _this.isloading = false
                     // console.log(res)
                     let data = res.data
                     if (data.status=="0") {
                         // userinfo
                         // name, uid:res.data.uid
-                        this.$router.push("/waitingRoom")
+                        _this.$router.push({
+                        path:"/waitingRoom",
+                        params: {
+                            uid: res.data.uid,
+                            name: _this.user.name,
+                        }
+                    })
                     } else if (data.status=="-1") {
-                        this.isErrorName = true
-                        this.errorInfoName = data.msg
+                        _this.isErrorName = true
+                        _this.errorInfoName = data.msg
                     } else if (data.status=="-2") {
-                        this.isErrorPwd = true
-                        this.errorInfoPwd = data.msg
+                        _this.isErrorPwd = true
+                        _this.errorInfoPwd = data.msg
                     } else {
-                        this.isErrorPwd = true
-                        this.isErrorPwd = "Invalid username or password."
+                        _this.isErrorPwd = true
+                        _this.isErrorPwd = "Invalid username or password."
                     }
                     
                 }).catch(res=>{
-                    this.isloading = false
+                    _this.isloading = false
                     // this.errorInfo = res.msg
                     // this.isError = true
                     console.log(res)

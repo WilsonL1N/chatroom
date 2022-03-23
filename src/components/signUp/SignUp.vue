@@ -78,9 +78,13 @@ export default {
                 let data = res.data
                 if (data.status=="0") {
                     alert("Account registration succeeded")
-                    // userinfo
-                    // name, uid:res.data.uid
-                    _this.$router.push("/waitingRoom")
+                    _this.$router.push({
+                        path:"/waitingRoom",
+                        params: {
+                            uid: res.data.uid,
+                            name: _this.user.name,
+                        }
+                    })
                 } else if (data.status=="-1") {
                     _this.isErrorName = true
                     _this.errorInfoName = data.msg

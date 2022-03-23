@@ -1,23 +1,21 @@
 <template>
-    <div>
-        <div class="popup_box">
-            <div class="field name">
-                <div class="hint">Room Name:</div>
-                <input id="room_name" class="input" v-model="room.name" placeholder="" maxlength="12" @blur="checkRoomName(room.name)">
-                <div class="error_hint" v-show="isErrorName">{{errorInfoName}}</div>
-            </div>
-            <div class="field private">
-                <input type="checkbox" id="room_private" v-model="room.isPrivate">
-                <label for="room_private">Private</label>
-            </div>
-            <div class="field password" v-show="room.isPrivate">
-                <div class="hint">Password:</div> 
-                <input id="room_password" type="password" class="input" v-model="room.password" placeholder="" maxlength="16" @blur="checkPassword(room.password)">
-                <div class="error_hint" v-show="isErrorPassword">{{errorInfoPassword}}</div>
-            </div>
-            <div class="field_confirm">
-                <button class="confirm_button" @click="confirm">Create Room</button>
-            </div>
+    <div class="popup_box">
+        <div class="field name">
+            <div class="hint">Room Name:</div>
+            <input id="room_name" class="input" v-model="room.name" placeholder="" maxlength="12" @blur="checkRoomName(room.name)">
+            <div class="error_hint" v-show="isErrorName">{{errorInfoName}}</div>
+        </div>
+        <div class="field private">
+            <input type="checkbox" id="room_private" v-model="room.isPrivate">
+            <label for="room_private">Private</label>
+        </div>
+        <div class="field password" v-show="room.isPrivate">
+            <div class="hint">Password:</div> 
+            <input id="room_password" type="password" class="input" v-model="room.password" placeholder="" maxlength="16" @blur="checkPassword(room.password)">
+            <div class="error_hint" v-show="isErrorPassword">{{errorInfoPassword}}</div>
+        </div>
+        <div class="field_confirm">
+            <button class="confirm_button" @click="confirm">Create Room</button>
         </div>
     </div>
 </template>
