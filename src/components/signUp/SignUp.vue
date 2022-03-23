@@ -1,6 +1,7 @@
 <template>
     <div class="signin_box">
         <div>
+            <div class="back" @click="backToLogin"><img :src="back"></div>
             <div class="input_box">
                 <div class="info_hint">Username:</div>
                 <input id="nameinput" class="info_input" v-model="user.name" placeholder="" maxlength="8" @blur="checkName">
@@ -19,18 +20,25 @@
         </div>
         
         <div class="button_box">
-            <button class="signup button" v-bind="{disabled: !isCanConfirm}" @click="register">Submit!</button>
+            <button class="signup button" v-bind="{disabled: !isCanConfirm}" @click="register">Register Account</button>
         </div>
     </div>
+    <loading-mask :isShow="isloading"></loading-mask>
 </template>
 
 <script>
 
-import { signup, checkDuplicated } from "api/api.js"
+import { signup, checkNameAvailable } from "./api/api.js"
+import backIcon from '@/assets/pic/back-button.png'
+import loadingMask from '@/components/loading/loadingMask.vue'
 
 export default {
+    components: {
+        loadingMask
+    },
     data(){
         return {
+            back: backIcon,
             user: {
                 name: "",
                 password: "",
@@ -42,12 +50,16 @@ export default {
             isErrorPassword: false,
             isErrorConfirm: false,
             confirm_Password: "",
+            isloading: false,
         }
     },
     mounted(){
 
     },
     methods: {
+        backToLogin: function() {
+            this.$router.push("/signin")
+        },
         register: function() {
             let res = this.checkInfo()
             if (!res.status) {
@@ -55,30 +67,51 @@ export default {
                 return false
             }
             let params = {
-                username: this.user.name,
+                name: this.user.name,
                 password: this.user.password
             }
-            // let _this = this
+            let _this = this
+            _this.isloading = true
             signup(params).then(res=>{
-                console.log(res)
-                // _this.$router.push()
+                _this.isloading = false
+                // console.log(res)
+                let data = res.data
+                if (data.status=="0") {
+                    alert("Account registration succeeded")
+                    // userinfo
+                    // name, uid:res.data.uid
+                    _this.$router.push("/waitingRoom")
+                } else if (data.status=="-1") {
+                    _this.isErrorName = true
+                    _this.errorInfoName = data.msg
+                } else {
+                    alert('Something goes wrong!')
+                }
             }).catch(res=>{
+                this.isloading = false
                 console.log(res)
             })
         },
 
         checkName: async function() {
+            this.isErrorName = false
             if (this.user.name == "") {
                 this.errorInfoName = "User name can not be empty."
                 this.isErrorName = true
             } else {
-                await checkDuplicated(this.user.name).then(res=>{
+                this.isloading = true
+                await checkNameAvailable(this.user.name).then(res=>{
+                    this.isloading = false
                     console.log(res)
-                    this.errorInfoName = "This name has been exist."
-                    this.isErrorName = false
+                    if (!res.data.isAvailable) {
+                        this.errorInfoName = "This account has been existed."
+                        this.isErrorName = true
+                    } else {
+                        this.isErrorName = false
+                    }
                 }).catch(res=>{
+                    this.isloading = false
                     console.log(res)
-                    this.isErrorName = true
                 })
             }
             
@@ -145,6 +178,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.back {
+    height: 20px;
+    width: 20px;
+    margin-bottom: 8px;
+    
+    &:hover {
+        cursor: pointer;
+    }
+
+    img {
+        height: 16px;
+        width: 16px;
+    }
+}
 .signin_box {
     text-align: left;
     width: 300px;
