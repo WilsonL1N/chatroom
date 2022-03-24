@@ -69,6 +69,7 @@ export default {
                         // name, uid:res.data.uid
                         _this.$router.push({
                         path:"/waitingRoom",
+                        name:"waitingRoom",
                         params: {
                             uid: res.data.uid,
                             name: _this.user.name,

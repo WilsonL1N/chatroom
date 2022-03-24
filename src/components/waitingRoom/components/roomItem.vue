@@ -4,7 +4,7 @@
             <div class="room_name">{{room.name}}</div>
             <div class="enter_button" @click="enterRoom(room.roomId)">Enter</div>
         </div>
-        <div class="room_discription">{{room.discription}}</div>
+        <div class="room_discription">{{room.discription || "No Discription Here"}}</div>
     </div>
 </template>
 
@@ -20,6 +20,7 @@ export default {
     methods: {
         enterRoom: function(id) {
             console.log(id)
+            this.$emit("enterRoom", id)
             // this.$route.push({
             //     path:'/room/'+id,
             //     params: {
@@ -43,6 +44,7 @@ export default {
     border-radius: 16px;
     margin-bottom: 20px;
     padding: 10px;
+    margin: 10px 19px;
     &:hover {
         border: 1px solid rgb(3, 187, 122);
     }
@@ -53,11 +55,11 @@ export default {
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
+        margin-bottom: 10px;
     
         .room_name {
             height: 30px;
             font-size: 26px;
-            margin-bottom: 10px;
         }
 
         .enter_button {

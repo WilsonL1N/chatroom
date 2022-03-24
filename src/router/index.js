@@ -3,6 +3,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import SignIn from '../components/signIn/SignIn.vue'
 import SignUp from '../components/signUp/SignUp.vue'
 import waitingRoom from '../components/waitingRoom/waitingRoom.vue'
+import chatRoom from '../components/chatRoom/chatRoom.vue'
 
 const routes = [
   {
@@ -25,6 +26,11 @@ const routes = [
     path: '/waitingRoom',
     name: 'waitingRoom',
     component: waitingRoom
+  },
+  {
+    path: '/chatRoom/:roomId',
+    name: 'chatRoom',
+    component: chatRoom
   },
   // {
   //   path: '/',

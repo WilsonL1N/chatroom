@@ -12,21 +12,23 @@
             </div>
         </div>
         <div class="room_area" v-if="displayRooms.length>0">
-            <room-item v-for="room in displayRooms" :key="room.roomId" :roomInfo="room" :userInfo="user"></room-item>
+            <room-item v-for="room in displayRooms" :key="room.roomId" :roomInfo="room" :userInfo="user" @enterRoom="showEnter"></room-item>
         </div>
         <div class="nodata" v-else>No Data</div>
     </div>
-    <add-room v-show="isShowAdd" :user="user" @createRoom="create"></add-room>
+    <add-room v-if="isShowAdd" :userInfo="user" @createRoom="create" @closeCreate="closeCreate"></add-room>
+    <enter-room v-if="isShowEnter" :userDetail="user" :roomDetail="roomDetail" @closeEnter="closeEnter"></enter-room>
     <loading-mask :isShow="isloading"></loading-mask>
 </template>
 
 <script>
 import roomItem from './components/roomItem.vue'
 import addRoom from './components/addRoom.vue'
+import enterRoom from './components/enterRoom.vue'
 import loadingMask from '@/components/loading/loadingMask.vue'
 import addIcon from '@/assets/pic/add.png'
 import refreshIcon from '@/assets/pic/refresh.png'
-import {getRooms} from './api/api.js'
+import {getRooms, createRoom} from './api/api.js'
 
 export default {
     data: function() {
@@ -42,17 +44,36 @@ export default {
             isShowAdd: false,
             search_input: "",
             isloading: false,
+            roomDetail: {},
+            isShowEnter: false,
         }
     },
     components: {
         roomItem,
         addRoom,
+        enterRoom,
         loadingMask,
     },
     methods: {
         create: function(data) {
-            return data
-            //this.refreshList()
+            let _this = this
+            _this.isloading = true
+            createRoom(data).then(res=>{
+                _this.isloading = false
+                if (res.data.status=="0") {
+                    _this.isloading = false
+                    _this.isShowAdd = false
+                    _this.getRoomList()
+                } else {
+                    alert(res.data.msg)
+                }
+            }).catch(res=>{
+                _this.isloading = false
+                console.log(res)
+            })
+        },
+        closeCreate: function() {
+            this.isShowAdd = false
         },
         getRoomList: function() {
             let _this = this
@@ -69,41 +90,54 @@ export default {
         },
         parseBool: function (val) { return val === true || val === "true" },
         search: function(search) {
+            if (search.length==0) {
+                this.displayRooms = this.rooms
+                return
+            }
+            this.displayRooms = []
+            let reg = new RegExp(search,"ig")
+            this.rooms.forEach((item)=>{
+                if (item.name.match(reg)) {
+                    this.displayRooms.push(item)
+                }
+            })
             console.log(search)
         },
         showAdd: function() {
             this.isShowAdd = true
         },
+        showEnter: function(roomId) {
+            this.displayRooms.forEach((item)=>{
+                if (item.roomId == roomId) {
+                    this.roomDetail = item
+                    return
+                }
+            })
+            this.isShowEnter = true
+        },
+        closeEnter: function() {
+            this.isShowEnter = false
+        }
     },
     mounted() {
-        this.user.uid = this.$route.params.uid
-        this.user.name = this.$route.params.name
-        // this.getRoomList()
-        this.displayRooms = [{
-            roomId:1, isPrivate:false, password: "", name: "abcd", discription:"sdfghjklbfd",
-        },{
-            roomId:2, isPrivate:true, password: "2345678", name: "alice_room", discription:"rtyuiomnvc",
-        },{
-            roomId:3, isPrivate:false, password: "", name: "bob_room", discription:"jfioshagire",
-        },{
-            roomId:4, isPrivate:true, password: "098765", name: "polyu", discription:"",
-        },{
-            roomId:5, isPrivate:false, password: "", name: "abcd", discription:"sdfghjklbfd",
-        },{
-            roomId:6, isPrivate:true, password: "2345678", name: "alice_room", discription:"rtyuiomnvc",
-        },{
-            roomId:7, isPrivate:false, password: "", name: "bob_room", discription:"jfioshagire",
-        },{
-            roomId:8, isPrivate:true, password: "098765", name: "polyu", discription:"",
-        },{
-            roomId:9, isPrivate:false, password: "", name: "abcd", discription:"sdfghjklbfd sdfghjklbfd sdfghjklbfd sdfghjklbfd sdfghjklbfd sdfghjklbfd sdfghjklbfd sdfghjklbfdjfioshagire jfioshagire jfioshagire jfioshagire jfioshagire jfioshagire jfioshagire jfioshagire",
-        },{
-            roomId:10, isPrivate:true, password: "2345678", name: "alice_room", discription:"rtyuiomnvc",
-        },{
-            roomId:11, isPrivate:false, password: "", name: "bob_room", discription:"jfioshagire",
-        },{
-            roomId:12, isPrivate:true, password: "098765", name: "polyu", discription:"",
-        },]
+        this.user.uid = this.$route.params.uid || '1'
+        this.user.name = this.$route.params.name || 'Alice'
+        console.log(this.user)
+        this.getRoomList()
+        // this.displayRooms = [{
+        //     roomId:1, isPrivate:false, password: "", name: "Alice's room", discription:"This is a discription.",
+        // },{
+        //     roomId:2, isPrivate:true, password: "2345678", name: "Bob's room", discription: "Hello",
+        // },{
+        //     roomId:3, isPrivate:false, password: "", name: "heyheyhey", discription:"",
+        // },{
+        //     roomId:4, isPrivate:true, password: "098765", name: "polyu", discription:"Polyu students group",
+        // },{
+        //     roomId:5, isPrivate:false, password: "", name: "room123", discription:"This is a very long discription. This is a very long discription. This is a very long discription. This is a very long discription. This is a very long discription. This is a very long discription.",
+        // },{
+        //     roomId:6, isPrivate:true, password: "2345678", name: "aaa", discription:"",
+        // }]
+        // this.rooms = this.displayRooms
     },
 }
 </script>
@@ -128,6 +162,7 @@ export default {
         justify-content: space-between;
         align-items: center;
         margin-bottom: 16px;
+        padding: 0 20px;
 
         .title {
             width: 350px;
@@ -196,19 +231,26 @@ export default {
     }
 
     .room_area {
-        width: 100%;
+        width: calc(100% - 20px);
+        padding: 0 10px;
         height: 420px;
         overflow-x: hidden;
         overflow-y: scroll;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        justify-content: space-around;
-        align-items: center;
+        justify-content: flex-start;
+        align-items: flex-start;
 
         &::-webkit-scrollbar {
             display: none;
         }
+    }
+
+    .nodata {
+        width: 100%;
+        text-align: center;
+        font-size: 20px;
     }
 }
 </style>
