@@ -9,7 +9,7 @@
         <div class="field name">
             <div class="info">
                 <div class="hint">Room Name:</div>
-                <input id="room_name_add" class="input" v-model="room.name" placeholder="" maxlength="16" @blur="checkRoomName(room.name)">
+                <input id="room_name_add" class="input" v-model="room.name" placeholder="" maxlength="17" @blur="checkRoomName(room.name)">
                 <div class="private">
                     <input type="checkbox" id="room_private" v-model="room.isPrivate">
                     <label for="room_private">Private</label>

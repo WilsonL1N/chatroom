@@ -56,6 +56,7 @@ export default {
                         path: "/chatRoom",
                         name: "chatRoom",
                         params: {
+                            roomName: this.room.name,
                             roomId: _this.room.roomId,
                             user: _this.user
                         }

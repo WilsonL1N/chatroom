@@ -1,8 +1,23 @@
 <template>
-    <div class="chat_display">
-        <chat-content></chat-content>
+    <div class="chat_room">
+        <div class="member_list">
+            <div class="title">Room Members</div>
+            <!-- <div class="search"></div> -->
+            <div class="list">
+                <div v-for="member in memberList" :key="member.uid" class="member">{{member.name}}</div>
+            </div>
+        </div>
+        <div class="chat_display">
+            <div class="content_display">
+                <div class="title">{{roomName}}</div>
+                <div id="msg_list" class="content_area">
+                    <chat-content v-for="msg in msgList" :key="msg" :user="user" :chatContent="msg"></chat-content>
+                </div>
+            </div>
+            <input-area @sendData="sendData" class="input_area"></input-area>
+        </div>
+        
     </div>
-    <input-area @sendData="sendData"></input-area>
 </template>
 
 <script>
@@ -12,7 +27,11 @@ import inputArea from './components/inputArea.vue'
 export default {
     data: function(){
         return {
-
+            memberList: [],
+            msgList: [],
+            user: {},
+            roomId: "",
+            roomName: "",
         }
     },
     components: {
@@ -22,12 +41,169 @@ export default {
     methods: {
         sendData: function(data) {
             //sendToServer(data)
-            return data
+            console.log(data)
+        },
+        getMemberList: function(roomId) {
+            this.memberList.push(this.user)
+            console.log(roomId)
+        },
+    },
+    mounted() {
+        this.user = this.$route.params.user || {"name": "Alice", "uid": "1"}
+        this.roomId = this.$route.params.roomId || "1"
+        this.roomName = this.$route.params.roomName || "Alice's room"
+        this.getMemberList(this.roomId)
+
+        this.msgList = [{
+            who: 0, //0: me, 1: other
+            user: {
+                name: "Alice",
+                uid: "1",
+            },
+            time: "15:48",
+            content: "Hello"
+        },{
+            who: 1, //0: me, 1: other
+            user: {
+                name: "Bob",
+                uid: "2",
+            },
+            time: "17:09",
+            content: "Hi, this is a very long content. this is a very long content. this is a very long content. this is a very long content."
+        },{
+            who: 1, //0: me, 1: other
+            user: {
+                name: "Bob",
+                uid: "2",
+            },
+            time: "17:09",
+            content: "Hi, this is a very long content.\n this is a very long content. this is a very long content."
+        },{
+            who: 0, //0: me, 1: other
+            user: {
+                name: "Alice",
+                uid: "1",
+            },
+            time: "18:01",
+            content: "Hi, this is a very long content. this is a very long content."
+        },]
+
+
+    },
+    watch: {
+        msgList: function() {
+            this.$nextTick(()=>{
+                let container = this.$el.querySelector("#msg_list")
+                container.scrollTop = container.scrollHeight
+            })
         }
-    }
+    },
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+.chat_room{
+    width: 900px;
+    height: 600px;
+    padding: 20px;
+    margin: auto;
+    // border: 1px solid;
+    // border-radius: 20px;
+    // box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+    background-color: rgb(255,255,255);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 
+    .member_list {
+        width: 280px;
+        height: 600px;
+        border: 1px solid;
+        border-radius: 20px;
+        box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+
+        .title{
+            width: 100%;
+            height: 40px;
+            margin: 20px 0;
+            font-size: 24px;
+            line-height: 40px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .list {
+            height: calc(100% - 100px);
+            width: calc(100% - 60px);
+            padding: 0 30px 20px 30px;
+            overflow-x: hidden;
+            overflow-y: scroll;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+
+            .member{
+                width: 100%;
+                height: 40px;
+                line-height: 40px;
+                font-size: 20px;
+                font-weight: 500;
+                text-align: left;
+            }
+        }
+    }
+
+    .chat_display {
+        width: 560px;
+        height: 600px;
+        padding: 0 20px;
+        margin-left: 20px;
+        // border: 1px solid;
+        // border-radius: 20px;
+        // box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+
+        .content_display {
+            width: 520px;
+            height: 400px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid;
+            border-radius: 20px;
+            box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+
+            .title{
+                width: 100%;
+                height: 40px;
+                margin-bottom: 20px;
+                font-size: 24px;
+                line-height: 40px;
+                font-weight: 700;
+                text-align: left;
+            }
+
+            .content_area {
+                height: calc(100% - 60px);
+                width: 100%;
+                padding: 0;
+                overflow-x: hidden;
+                overflow-y: scroll;
+
+                &::-webkit-scrollbar {
+                    display: none;
+                }
+            }
+        }
+
+        .input_area {
+            width: 540px;
+            height: 118px;
+            padding: 10px;
+            border: 1px solid;
+            border-radius: 20px;
+            box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+        }
+    }
+}
 </style>

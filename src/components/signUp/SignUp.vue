@@ -4,7 +4,7 @@
             <div class="back" @click="backToLogin"><img :src="back"></div>
             <div class="input_box">
                 <div class="info_hint">Username:</div>
-                <input id="nameinput" class="info_input" v-model="user.name" placeholder="" maxlength="8" @blur="checkName">
+                <input id="nameinput" class="info_input" v-model="user.name" placeholder="" maxlength="12" @blur="checkName">
                 <div class="error_hint" v-show="isErrorName">{{errorInfoName}}</div>
             </div>
             <div class="input_box">
@@ -14,7 +14,7 @@
             </div>
             <div class="input_box">
                 <div class="info_hint">Confirm your Password:</div> 
-                <input id="passwordconfirm" type="password" class="info_input" v-model="confirm_Password" placeholder="" maxlength="12" @blur="checkConfirm">
+                <input id="passwordconfirm" type="password" class="info_input" v-model="confirm_Password" placeholder="" maxlength="16" @blur="checkConfirm">
                 <div class="error_hint" v-show="isErrorConfirm">{{errorInfoConfirm}}</div>
             </div>
         </div>

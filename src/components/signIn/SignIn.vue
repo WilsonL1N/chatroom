@@ -3,12 +3,12 @@
         <div>
             <div class="input_box">
                 <div class="info_hint">Username:</div>
-                <input id="nameinput" class="info_input" v-model="user.name" placeholder="" maxlength="8">
+                <input id="nameinput" class="info_input" v-model="user.name" placeholder="" maxlength="12">
                 <div class="error_hint" v-show="isErrorName">{{errorInfoName}}</div>
             </div>
             <div class="input_box">
                 <div class="info_hint">Password:</div> 
-                <input id="passwordinput" type="password" class="info_input" v-model="user.password" placeholder="" maxlength="12">
+                <input id="passwordinput" type="password" class="info_input" v-model="user.password" placeholder="" maxlength="16">
                 <div class="error_hint" v-show="isErrorPwd">{{errorInfoPwd}}</div>
             </div>    
         </div>
