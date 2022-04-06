@@ -58,7 +58,8 @@ export default {
                         params: {
                             roomName: this.room.name,
                             roomId: _this.room.roomId,
-                            user: _this.user
+                            uid: _this.user.uid,
+                            name: _this.user.name,
                         }
                     })
                 } else {

@@ -4,11 +4,11 @@ import main from "../main";
 export default createStore({
     state: {
         socket: {
-        isConnected: false,
-        message: "",
-        reconnectError: false,
-        heartBeatInterval: 50000,
-        heartBeatTimer: 0
+            isConnected: false,
+            message: "",
+            reconnectError: false,
+            heartBeatInterval: 50000,
+            heartBeatTimer: 0
         }
     },
     mutations: {
@@ -41,7 +41,6 @@ export default createStore({
         },
         
         SOCKET_ONMESSAGE(state, message) {
-            console.log(JSON.parse(message.data))
             state.socket.message = message;
         },
         

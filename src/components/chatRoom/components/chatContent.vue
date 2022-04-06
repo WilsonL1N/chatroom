@@ -85,15 +85,21 @@ export default {
     .msg {
         position: relative;
         max-width: 320px;
+        min-width: 30px;
         word-wrap: normal;
         margin: 6px;
-        padding: 4px;
+        padding: 4px 8px;
         font-size: 14px;
         text-align: left;
         line-height: 20px;
         border: 1px solid;
         border-radius: 8px;
         white-space: pre-line;
+
+        &_right {
+            background-color: #36e3a6;
+            border: none;
+        }
 
         &_left::before {
             content: '';
@@ -113,14 +119,14 @@ export default {
             content: '';
             position: absolute;
             top: 50%;
-            right: -5px;
+            right: -3px;
             width: 6px;
             height: 6px;
             margin-top: -5px;
             background: inherit;
             transform: rotate(45deg);
-            border-right: 1px solid;
-            border-top: 1px solid;
+            // border-right: 1px solid;
+            // border-top: 1px solid;
         }
     }
 }

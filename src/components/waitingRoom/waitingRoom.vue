@@ -63,7 +63,16 @@ export default {
                 if (res.data.status=="0") {
                     _this.isloading = false
                     _this.isShowAdd = false
-                    _this.getRoomList()
+                    _this.$router.push({
+                        path: "/chatRoom",
+                        name: "chatRoom",
+                        params: {
+                            roomName: data.name,
+                            roomId: res.data.roomId,
+                            uid: _this.user.uid,
+                            name: _this.user.name,
+                        }
+                    })
                 } else {
                     alert(res.data.msg)
                 }
@@ -80,7 +89,6 @@ export default {
             this.isloading = true
             getRooms().then(res=>{
                 _this.isloading = false
-                console.log(res)
                 this.rooms = res.data
                 this.displayRooms = this.rooms
             }).catch(res=>{
@@ -124,20 +132,6 @@ export default {
         this.user.name = this.$route.params.name || 'Alice'
         console.log(this.user)
         this.getRoomList()
-        // this.displayRooms = [{
-        //     roomId:1, isPrivate:false, password: "", name: "Alice's room", discription:"This is a discription.",
-        // },{
-        //     roomId:2, isPrivate:true, password: "2345678", name: "Bob's room", discription: "Hello",
-        // },{
-        //     roomId:3, isPrivate:false, password: "", name: "heyheyhey", discription:"",
-        // },{
-        //     roomId:4, isPrivate:true, password: "098765", name: "polyu", discription:"Polyu students group",
-        // },{
-        //     roomId:5, isPrivate:false, password: "", name: "room123", discription:"This is a very long discription. This is a very long discription. This is a very long discription. This is a very long discription. This is a very long discription. This is a very long discription.",
-        // },{
-        //     roomId:6, isPrivate:true, password: "2345678", name: "aaa", discription:"",
-        // }]
-        // this.rooms = this.displayRooms
     },
 }
 </script>

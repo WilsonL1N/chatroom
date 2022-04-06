@@ -1,6 +1,6 @@
 <template>
     <div class="input_area">
-        <textarea class="input_box" v-model="inputData"></textarea>
+        <textarea class="input_box" v-model="inputData" @keydown="keyListen"></textarea>
         <div class="send_button" @click="sendData">Send</div>
     </div>
 </template>
@@ -14,9 +14,16 @@ export default {
     },
     methods: {
         sendData: function() {
-            console.log(JSON.stringify({"content":this.inputData}))
             if (this.inputData.length>0) {
                 this.$emit('sendData', this.inputData)
+                this.inputData = ""
+            }
+        },
+        keyListen: function(e) {
+            if (e.keyCode === 13) {
+                this.sendData()
+                e.preventDefault()
+                return false
             }
         }
     }

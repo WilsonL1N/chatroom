@@ -23,13 +23,17 @@
 <script>
 import chatContent from './components/chatContent.vue'
 import inputArea from './components/inputArea.vue'
+import time_format from '@/assets/js/data_format'
 
 export default {
     data: function(){
         return {
             memberList: [],
             msgList: [],
-            user: {},
+            user: {
+                uid: "",
+                name: ""
+            },
             roomId: "",
             roomName: "",
         }
@@ -39,9 +43,18 @@ export default {
         inputArea,
     },
     methods: {
+        initWebSocket(roomId) {
+            this.$connect(`ws://localhost:8081/msgWebsocket/${roomId}`)
+        },
         sendData: function(data) {
             //sendToServer(data)
-            console.log(data)
+            let msg = {
+                type: 0,
+                user: this.user,
+                content: data,
+                time: time_format(new Date())
+            }
+            this.$socket.send(JSON.stringify(msg))
         },
         getMemberList: function(roomId) {
             this.memberList.push(this.user)
@@ -49,55 +62,52 @@ export default {
         },
     },
     mounted() {
-        this.user = this.$route.params.user || {"name": "Alice", "uid": "1"}
+        this.user.uid = this.$route.params.uid || "1"
+        this.user.name = this.$route.params.name || "Alice"
         this.roomId = this.$route.params.roomId || "1"
         this.roomName = this.$route.params.roomName || "Alice's room"
         this.getMemberList(this.roomId)
-
-        this.msgList = [{
-            who: 0, //0: me, 1: other
-            user: {
-                name: "Alice",
-                uid: "1",
-            },
-            time: "15:48",
-            content: "Hello"
-        },{
-            who: 1, //0: me, 1: other
-            user: {
-                name: "Bob",
-                uid: "2",
-            },
-            time: "17:09",
-            content: "Hi, this is a very long content. this is a very long content. this is a very long content. this is a very long content."
-        },{
-            who: 1, //0: me, 1: other
-            user: {
-                name: "Bob",
-                uid: "2",
-            },
-            time: "17:09",
-            content: "Hi, this is a very long content.\n this is a very long content. this is a very long content."
-        },{
-            who: 0, //0: me, 1: other
-            user: {
-                name: "Alice",
-                uid: "1",
-            },
-            time: "18:01",
-            content: "Hi, this is a very long content. this is a very long content."
-        },]
-
-
+        this.initWebSocket(this.roomId)
+    },
+    computed: {
+        newMsg () {
+            return this.$store.state.socket.message.data
+        }
     },
     watch: {
+        newMsg(){
+            this.$nextTick(()=>{
+                let data = JSON.parse(this.newMsg)
+                if (data.type == 1) {
+                    data.who = 2
+                } else {
+                    if (data.user.uid == this.user.uid) {
+                        data.who = 0
+                    } else {
+                        data.who = 1
+                    }
+                }
+                console.log(data)
+                this.msgList.push(data)
+                this.$nextTick(()=>{
+                    let container = this.$el.querySelector("#msg_list")
+                    container.scrollTop = container.scrollHeight
+                })
+            })
+        },
         msgList: function() {
             this.$nextTick(()=>{
                 let container = this.$el.querySelector("#msg_list")
                 container.scrollTop = container.scrollHeight
             })
-        }
+        },
+
+
     },
+
+    beforeUnmount() {
+        this.$disconnect()
+    }
 }
 </script>
 
