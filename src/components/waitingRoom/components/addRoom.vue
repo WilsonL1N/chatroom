@@ -185,12 +185,32 @@ export default {
                 font-size: 16px;
                 line-height: 40px;
                 text-align: left;
-                border-radius: 8px;
-                border: 1px solid;
+                // border-radius: 8px;
+                // border: 1px solid;
+            }
+
+            input {
+                border: none;
+                border-bottom: 1px solid rgb(212, 217, 226);
+
+                &:focus {
+                    border-bottom: 1px solid rgb(212, 217, 226);
+                    outline: none;
+                    background-color: transparent;
+                }
+                &:-webkit-autofill-selected {
+                    background-color: #FFF;
+                }
+
+                &::placeholder {
+                    color: rgb(194, 199, 207);
+                    font-size: 12px;
+                    letter-spacing: 1px;
+                }
             }
 
             .private {
-                margin-left: 8px;
+                margin-left: 45px;
             }
         }
 
@@ -222,7 +242,7 @@ export default {
         .input_disc {
             font-size: 16px;
             line-height: 30px;
-            width: 240px;
+            width: 320px;
             padding: 4px 8px;
             border-radius: 8px;
         }

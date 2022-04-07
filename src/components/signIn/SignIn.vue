@@ -1,21 +1,22 @@
 <template>
     <div class="signin_box">
         <div>
+            <div class="title">Password&nbsp;&nbsp;Login</div>
             <div class="input_box">
-                <div class="info_hint">Username:</div>
-                <input id="nameinput" class="info_input" v-model="user.name" placeholder="" maxlength="12">
+                <!-- <div class="info_hint">Username:</div> -->
+                <input id="nameinput" class="info_input" v-model="user.name" placeholder="Account" maxlength="12">
                 <div class="error_hint" v-show="isErrorName">{{errorInfoName}}</div>
             </div>
             <div class="input_box">
-                <div class="info_hint">Password:</div> 
-                <input id="passwordinput" type="password" class="info_input" v-model="user.password" placeholder="" maxlength="16">
+                <!-- <div class="info_hint">Password:</div>  -->
+                <input id="passwordinput" type="password" class="info_input" v-model="user.password" placeholder="Password" maxlength="16" @keyup.enter="signin">
                 <div class="error_hint" v-show="isErrorPwd">{{errorInfoPwd}}</div>
             </div>    
         </div>
         
         <div class="button_box">
-            <div class="signup link" @click="signup">Sign up</div>
-            <div class="signin button" @click="signin">Sign in</div>
+            <div class="signin button" @click="signin">Login</div>
+            <div class="signup link" @click="signup">Register Account</div>
         </div>
     </div>
     <loading-mask :isShow="isloading"></loading-mask>
@@ -104,9 +105,10 @@ export default {
 
 <style lang="scss" scoped>
 .signin_box {
+    background-color: #FFF;
     text-align: left;
     width: 300px;
-    height: 200px;
+    height: 270px;
     margin: auto;
     padding: 20px;
     position: absolute;
@@ -114,16 +116,25 @@ export default {
     left: 0;
     bottom: 0;
     right: 0;
-    border: 1px solid;
-    border-radius: 15px;
+    border-left: 1px solid rgb(168,168,168);
+    border-top: 1px solid rgb(168,168,168);
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 
+    .title {
+        width: 126px;
+        margin: 0 auto 40px auto;
+        padding: 8px 8px;
+        border-bottom: 4px solid rgb(3, 187, 122);
+        text-align: center;
+    }
     .input_box {
         display: flex;
         flex-direction: column;
-        margin-bottom: 16px;
+        align-items: center;
+        margin-bottom: 22px;
 
         .info_hint {
             width: 100%;
@@ -132,52 +143,81 @@ export default {
         }
 
         .info_input {            
-            width: calc(100% - 8px);
+            width: calc(80% - 8px);
             height: 22px;
             font-size: 16px;
             padding: 4px;
+            // margin: auto;
+        }
+
+        input {
+            border: none;
+            border-bottom: 1px solid rgb(212, 217, 226);
+
+            &:focus {
+                border-bottom: 1px solid rgb(212, 217, 226);
+                outline: none;
+                background-color: transparent;
+            }
+            &:-webkit-autofill-selected {
+                background-color: #FFF;
+            }
+
+            &::placeholder {
+                color: rgb(194, 199, 207);
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
         }
 
         .error_hint {
+            width: 240px;
+            text-align: left;
             font-size: 8px;
             color: red;
         }
     }
 
     .button_box {
+        margin-top: 14px;
         display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: flex-end;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
 
         .signup {
+            width: 250px;
             font-size: 12px;
-            color: #0088ce;
+            text-align: right;
+            color: rgb(3, 187, 122);
             height: 20px;
         }
 
         .link {
-            text-decoration: underline;
+            text-decoration: none;
             &:hover {
-                text-decoration: none;
+                text-decoration: underline;
                 cursor: pointer;
             }
         }
 
         .signin {
+            width: 240px;
             height: 24px;
+            margin-bottom: 10px;
             font-size: 16px;
+            text-align: center;
             color: white;
-            background-color: blue;
+            background-color: rgb(3, 187, 122);
 
             &:hover {
-                background-color: #0088ce;
+                background-color: rgb(14, 142, 97);
             }
         }
 
         .button {
             padding: 4px 8px;
-            border-radius: 6px;
+            border-radius: 16px;
 
             &:hover {
                 cursor: pointer;

@@ -63,10 +63,12 @@ export default {
 
         &_left {
             flex-direction: row;
+            margin-left: 8px;
         }
 
         &_right {
             flex-direction: row-reverse;
+            margin-right: 8px;
         }
 
         .name {
@@ -88,46 +90,50 @@ export default {
         min-width: 30px;
         word-wrap: normal;
         margin: 6px;
-        padding: 4px 8px;
+        padding: 6px 12px;
         font-size: 14px;
         text-align: left;
         line-height: 20px;
         border: 1px solid;
-        border-radius: 8px;
+        // border-radius: 14px;
         white-space: pre-line;
 
+        &_left {
+            border-radius: 0 14px 14px 14px;
+        }
         &_right {
             background-color: #36e3a6;
+            border-radius: 14px 0 14px 14px;
             border: none;
         }
 
-        &_left::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: -5px;
-            width: 6px;
-            height: 6px;
-            margin-top: -5px;
-            background: inherit;
-            transform: rotate(45deg);
-            border-left: 1px solid;
-            border-bottom: 1px solid;
-        }
+        // &_left::before {
+        //     content: '';
+        //     position: absolute;
+        //     top: 50%;
+        //     left: -5px;
+        //     width: 6px;
+        //     height: 6px;
+        //     margin-top: -5px;
+        //     background: inherit;
+        //     transform: rotate(45deg);
+        //     border-left: 1px solid;
+        //     border-bottom: 1px solid;
+        // }
 
-        &_right::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            right: -3px;
-            width: 6px;
-            height: 6px;
-            margin-top: -5px;
-            background: inherit;
-            transform: rotate(45deg);
-            // border-right: 1px solid;
-            // border-top: 1px solid;
-        }
+        // &_right::after {
+        //     content: '';
+        //     position: absolute;
+        //     top: 50%;
+        //     right: -3px;
+        //     width: 6px;
+        //     height: 6px;
+        //     margin-top: -5px;
+        //     background: inherit;
+        //     transform: rotate(45deg);
+        //     // border-right: 1px solid;
+        //     // border-top: 1px solid;
+        // }
     }
 }
 

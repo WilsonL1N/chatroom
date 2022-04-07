@@ -8,8 +8,8 @@
             </div>
             <div class="discription">{{room.discription||"No Discription Here."}}</div>
             <div class="input_box" v-show="room.private">
-                <div class="info_hint">Password:</div> 
-                <input id="enter_room_password" type="password" class="info_input" v-model="inputPassword" placeholder="" maxlength="16">    
+                <!-- <div class="info_hint">Password:</div>  -->
+                <input id="enter_room_password" type="password" class="info_input" v-model="inputPassword" placeholder="Please enter the Password" maxlength="16">    
                 <div class="error_hint" v-show="isErrorPassword">
                     <img :src="errorIcon">
                 </div>
@@ -150,7 +150,7 @@ export default {
     .input_box {
         display: flex;
         flex-direction: row;
-        justify-content: flex-start;
+        justify-content: center;
         align-items: center;
         margin-bottom: 20px;
         padding: 20px;
@@ -164,10 +164,27 @@ export default {
         }
 
         .info_input {            
-            width: 150px;
+            width: 168px;
             height: 22px;
             font-size: 16px;
             padding: 4px 8px;
+        }
+
+        input {
+            border: none;
+            border-bottom: 1px solid rgb(212, 217, 226);
+
+            &:focus {
+                border-bottom: 1px solid rgb(212, 217, 226);
+                outline: none;
+                background-color: transparent;
+            }
+
+            &::placeholder {
+                color: rgb(194, 199, 207);
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
         }
 
         .error_hint {

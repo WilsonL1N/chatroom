@@ -138,6 +138,8 @@ export default {
 
 <style lang="scss" scoped>
 .waiting_room {
+    background-color: #FFF;
+
     width: 900px;
     height: 500px;
     margin: auto;
@@ -147,8 +149,10 @@ export default {
     left: 0;
     bottom: 0;
     right: 0;
-    border: 1px solid;
+    border-left: 1px solid rgb(168,168,168);
+    border-top: 1px solid rgb(168,168,168);
     border-radius: 15px;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 
     .top_bar {
         display: flex;
@@ -168,7 +172,6 @@ export default {
         .search_bar {
             height: 40px;
             padding: 4px;
-            border-radius: 6px;
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -182,6 +185,14 @@ export default {
                 border-radius: 20px;
                 margin-right: 16px;
             }
+            
+            input {
+                border: 1px solid rgb(144,144,144);
+                &:focus {
+                    border: 1px solid rgb(144,144,144);
+                    outline: none;
+                }
+            }
 
             .search_button {
                 width: 60px;
@@ -189,13 +200,14 @@ export default {
                 padding: 3px;
                 border-radius: 8px;
                 font-size: 16px;
-                border: 1px solid;
+                // border: 1px solid;
                 background-color: rgb(3, 187, 122);
                 color: rgb(255,255,255);
                 text-align: center;
                 line-height: 20px;
 
                 &:hover {
+                    background-color: rgb(14, 142, 97);
                     cursor: pointer;
                 }
             }
@@ -242,7 +254,10 @@ export default {
     }
 
     .nodata {
-        width: 100%;
+        width: 120px;
+        height: 40px;
+        margin: 100px auto;
+        line-height: 40px;
         text-align: center;
         font-size: 20px;
     }

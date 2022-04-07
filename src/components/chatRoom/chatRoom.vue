@@ -6,6 +6,9 @@
             <div class="list">
                 <div v-for="member in memberList" :key="member.uid" class="member">{{member.name}}</div>
             </div>
+            <div class="button_box">
+                <div class="button" @click="leaveRoom">Leave</div>
+            </div>
         </div>
         <div class="chat_display">
             <div class="content_display">
@@ -60,6 +63,16 @@ export default {
             this.memberList.push(this.user)
             console.log(roomId)
         },
+        leaveRoom: function() {
+            this.$router.push({
+                path:"/waitingRoom",
+                name: "waitingRoom",
+                params: {
+                    uid: this.user.uid,
+                    name: this.user.name,
+                }
+            })
+        }
     },
     mounted() {
         this.user.uid = this.$route.params.uid || "1"
@@ -120,16 +133,17 @@ export default {
     // border: 1px solid;
     // border-radius: 20px;
     // box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
-    background-color: rgb(255,255,255);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
 
     .member_list {
+        background-color: rgb(255,255,255);
         width: 280px;
         height: 600px;
-        border: 1px solid;
+        border-left: 1px solid rgb(168,168,168);
+        border-top: 1px solid rgb(168,168,168);
         border-radius: 20px;
         box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 
@@ -141,10 +155,11 @@ export default {
             line-height: 40px;
             font-weight: 700;
             text-align: center;
+            text-decoration: underline;
         }
 
         .list {
-            height: calc(100% - 100px);
+            height: calc(100% - 140px);
             width: calc(100% - 60px);
             padding: 0 30px 20px 30px;
             overflow-x: hidden;
@@ -163,6 +178,27 @@ export default {
                 text-align: left;
             }
         }
+        .button_box {
+            height: 40px;
+            width: calc(100% - 60px);
+            margin: auto;
+
+            .button {
+                width: 100%;
+                height: 22px;
+                padding: 4px 0;
+                font-size: 16px;
+                text-align: center;
+                color: white;
+                background-color: rgb(245, 58, 58);
+                border-radius: 8px;
+
+                &:hover {
+                    background-color: rgb(187, 21, 3);
+                    cursor: pointer;
+                }
+            }
+        }
     }
 
     .chat_display {
@@ -175,11 +211,13 @@ export default {
         // box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 
         .content_display {
+            background-color: rgb(255,255,255);
             width: 520px;
             height: 400px;
             padding: 20px;
             margin-bottom: 20px;
-            border: 1px solid;
+            border-left: 1px solid rgb(168,168,168);
+            border-top: 1px solid rgb(168,168,168);
             border-radius: 20px;
             box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 
@@ -191,6 +229,7 @@ export default {
                 line-height: 40px;
                 font-weight: 700;
                 text-align: left;
+                text-decoration: underline;
             }
 
             .content_area {
@@ -207,10 +246,12 @@ export default {
         }
 
         .input_area {
+            background-color: rgb(255,255,255);
             width: 540px;
             height: 118px;
             padding: 10px;
-            border: 1px solid;
+            border-left: 1px solid rgb(168,168,168);
+            border-top: 1px solid rgb(168,168,168);
             border-radius: 20px;
             box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
         }
