@@ -4,7 +4,10 @@
             <div class="name">{{msg.user.name}}</div>
             <div class="time">{{msg.time}}</div>
         </div>
-        <div class="msg" :class="[msg.who==0?'msg_right':'msg_left']">{{msg.content}}</div>
+        <div class="image" :class="[msg.who==0?'image_right':'image_left']" v-if="msg.type==2">
+            <img :src="msg.content" alt="">
+        </div>
+        <div class="msg" :class="[msg.who==0?'msg_right':'msg_left']" v-else>{{msg.content}}</div>
     </div>
 </template>
 
@@ -84,6 +87,17 @@ export default {
         }
     }
 
+    .image {
+        position: relative;
+        max-width: 320px;
+        min-width: 30px;
+        margin: 6px;
+        padding: 6px 12px;
+
+        img {
+            max-width: 320px;
+        }
+    }
     .msg {
         position: relative;
         max-width: 320px;

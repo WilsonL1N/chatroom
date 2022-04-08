@@ -17,7 +17,7 @@
                     <chat-content v-for="msg in msgList" :key="msg" :user="user" :chatContent="msg"></chat-content>
                 </div>
             </div>
-            <input-area @sendData="sendData" class="input_area"></input-area>
+            <input-area @sendData="sendData" @uploadimg="uploadimg" class="input_area"></input-area>
         </div>
         
     </div>
@@ -27,6 +27,7 @@
 import chatContent from './components/chatContent.vue'
 import inputArea from './components/inputArea.vue'
 import time_format from '@/assets/js/data_format'
+import { subPic, concatPic } from '@/assets/js/pic_data_process'
 
 export default {
     data: function(){
@@ -39,6 +40,7 @@ export default {
             },
             roomId: "",
             roomName: "",
+            arrayBuffer: {}
         }
     },
     components: {
@@ -58,6 +60,28 @@ export default {
                 time: time_format(new Date())
             }
             this.$socket.send(JSON.stringify(msg))
+        },
+        uploadimg: function(data) {
+            let data_seg = subPic(data,1024)
+            let len = data_seg.length
+            let curr_time = time_format(new Date())
+            for (let i=0; i<len; i++) {
+                let segment = {
+                    total: len,
+                    current: i+1
+                }
+                //sendToServer(data)
+                let msg = {
+                    type: 2,
+                    user: this.user,
+                    content: data_seg[i],
+                    segment: segment,
+                    time: curr_time
+                }
+                // console.log(i,msg)
+                this.$socket.send(JSON.stringify(msg))
+            }
+            
         },
         getMemberList: function(roomId) {
             this.memberList.push(this.user)
@@ -91,29 +115,56 @@ export default {
         newMsg(){
             this.$nextTick(()=>{
                 let data = JSON.parse(this.newMsg)
-                if (data.type == 1) {
-                    data.who = 2
-                } else {
-                    if (data.user.uid == this.user.uid) {
-                        data.who = 0
+                if (data.type == 2) {
+                    let temp = data.user.name+data.time
+                    if (temp in this.arrayBuffer) {
+                        this.arrayBuffer[temp].push(data.content)
+                        if (this.arrayBuffer[temp].length == data.segment.total) {
+                            let msg = {
+                                who: data.user.uid == this.user.uid?0:1,
+                                type: 2,
+                                user: data.user,
+                                content: concatPic(this.arrayBuffer[temp]),
+                                time: data.time
+                            }
+                            this.msgList.push(msg)
+                            delete this.arrayBuffer[temp]
+                            this.$nextTick(()=>{
+                                let container = this.$el.querySelector("#msg_list")
+                                container.scrollTop = container.scrollHeight
+                            })
+                            return
+                        }
                     } else {
-                        data.who = 1
+                        this.arrayBuffer[temp] = []
+                        this.arrayBuffer[temp].push(data.content)
+                        return
                     }
+                } else {
+                    if (data.type == 1) {
+                        data.who = 2
+                    } else {
+                        if (data.user.uid == this.user.uid) {
+                            data.who = 0
+                        } else {
+                            data.who = 1
+                        }
+                    }
+                    console.log(data)
+                    this.msgList.push(data)
+                    this.$nextTick(()=>{
+                        let container = this.$el.querySelector("#msg_list")
+                        container.scrollTop = container.scrollHeight
+                    })
                 }
-                console.log(data)
-                this.msgList.push(data)
-                this.$nextTick(()=>{
-                    let container = this.$el.querySelector("#msg_list")
-                    container.scrollTop = container.scrollHeight
-                })
             })
         },
-        msgList: function() {
-            this.$nextTick(()=>{
-                let container = this.$el.querySelector("#msg_list")
-                container.scrollTop = container.scrollHeight
-            })
-        },
+        // msgList: function() {
+        //     this.$nextTick(()=>{
+        //         let container = this.$el.querySelector("#msg_list")
+        //         container.scrollTop = container.scrollHeight
+        //     })
+        // },
 
 
     },
