@@ -2,7 +2,7 @@ import axios from 'axios'
 import baseURL from '@/assets/js/baseURL_config'
 
 // params: none
-// return: resp:[room{roomId:"", isPrivate:"", password: "", name: "", discription:""}]
+// return: res:[room{roomId:"", isPrivate:"", password: "", name: "", discription:""}]
 export function getRooms() {
     return axios({
         url: baseURL + '/rooms/getRooms',
@@ -20,12 +20,19 @@ export function enterRoom(data) {
     })
 }
 
-// params: room:{}
-// return: 'ok/fail'
+// params: roomId
+// return: null
 export function createRoom(data) {
     return axios({
         url: baseURL + '/rooms/addRoom',
         method: 'POST',
         data: data,
+    })
+}
+
+export function delRoom(roomId) {
+    return axios({
+        url: baseURL + '/rooms/delRoom?roomId='+roomId,
+        method: 'GET',
     })
 }

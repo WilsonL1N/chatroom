@@ -28,6 +28,7 @@ import chatContent from './components/chatContent.vue'
 import inputArea from './components/inputArea.vue'
 import time_format from '@/assets/js/data_format'
 import { subPic, concatPic } from '@/assets/js/pic_data_process'
+import { delRoom } from '@/components/waitingRoom/api/api'
 
 export default {
     data: function(){
@@ -83,11 +84,18 @@ export default {
             }
             
         },
-        getMemberList: function(roomId) {
-            this.memberList.push(this.user)
-            console.log(roomId)
-        },
+        // getMemberList: function(roomId) {
+        //     console.log(roomId)
+        // },
         leaveRoom: function() {
+            if (this.memberList.length == 1) {
+                delRoom(this.roomId).then(res=>{
+                    console.log(res)
+                }).catch(res=>{
+                    console.log(res)
+                })
+            }
+            this.$disconnect()
             this.$router.push({
                 path:"/waitingRoom",
                 name: "waitingRoom",
@@ -103,19 +111,45 @@ export default {
         this.user.name = this.$route.params.name || "Alice"
         this.roomId = this.$route.params.roomId || "1"
         this.roomName = this.$route.params.roomName || "Alice's room"
-        this.getMemberList(this.roomId)
+        // this.getMemberList(this.roomId)
         this.initWebSocket(this.roomId)
     },
     computed: {
         newMsg () {
             return this.$store.state.socket.message.data
+        },
+        isConnected () {
+            return this.$store.state.socket.isConnected
+        },
+        membersCount () {
+            return this.memberList.length
         }
     },
     watch: {
+        isConnected() {
+            if (this.isConnected) {
+                let msg = {
+                    type: "userInfo",
+                    uid: parseInt(this.user.uid),
+                    name: this.user.name
+                }
+                console.log(msg)
+                this.$socket.send(JSON.stringify(msg))
+            }
+        },
         newMsg(){
             this.$nextTick(()=>{
                 let data = JSON.parse(this.newMsg)
-                if (data.type == 2) {
+                if (data.type == "memberList") {
+                    this.memberList = []
+                    for (let i=0; i<data.uids.length; i++) {
+                        let user = {
+                            name: data.names[i],
+                            uid: data.uids[i]
+                        }
+                        this.memberList.push(user)
+                    }
+                } else if (data.type == 2) {
                     let temp = data.user.name+data.time
                     if (temp in this.arrayBuffer) {
                         this.arrayBuffer[temp].push(data.content)
@@ -165,8 +199,6 @@ export default {
         //         container.scrollTop = container.scrollHeight
         //     })
         // },
-
-
     },
 
     beforeUnmount() {
@@ -209,10 +241,15 @@ export default {
             text-decoration: underline;
         }
 
+        .member_count {
+            margin-left: 4px;
+            text-decoration: none;
+        }
+
         .list {
             height: calc(100% - 140px);
-            width: calc(100% - 60px);
-            padding: 0 30px 20px 30px;
+            width: calc(100% - 80px);
+            padding: 0 40px 20px 40px;
             overflow-x: hidden;
             overflow-y: scroll;
 

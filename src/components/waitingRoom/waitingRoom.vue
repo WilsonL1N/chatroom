@@ -88,6 +88,7 @@ export default {
             let _this = this
             this.isloading = true
             getRooms().then(res=>{
+                console.log(res)
                 _this.isloading = false
                 this.rooms = res.data
                 this.displayRooms = this.rooms
