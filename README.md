@@ -1,5 +1,12 @@
 # chatroom
 
+## Dependencies
+```
+node.js v16.14.0
+npm v8.6.0
+other packages are detailed in package.json
+```
+
 ## Project setup
 ```
 npm install
