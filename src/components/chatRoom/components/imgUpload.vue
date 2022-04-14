@@ -60,12 +60,12 @@ export default {
             let img = new Image()
             let reader =new FileReader()
             reader.readAsDataURL(files[0])
-            reader.onload =function(e){
-                let dx =(e.total/1024)/1024
-                if(dx>=2){
-                    alert("文件大小大于2M")
-                    return
-                }
+            reader.onload =function(){
+                // let dx =(e.total/1024)/1024
+                // if(dx>=2){
+                //     alert("文件大小大于2M")
+                //     return
+                // }
                 img.src =this.result
                 _this.img = img.src
                 _this.isUpload = true
